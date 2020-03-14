@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/user_list_fragment">
+
+    <fragment
+        android:id="@+id/user_list_fragment"
+        android:name="com.maxciv.githubuserlist.ui.UserListFragment"
+        android:label="@string/fragment_label_user_list"
+        tools:layout="@layout/fragment_user_list">
+        <action
+            android:id="@+id/to_detailed_post"
+            app:destination="@id/user_details_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/user_details_fragment"
+        android:name="com.maxciv.githubuserlist.ui.UserDetailsFragment"
+        android:label="@string/fragment_label_user_details"
+        tools:layout="@layout/fragment_user_details">
+    </fragment>
+</navigation>
