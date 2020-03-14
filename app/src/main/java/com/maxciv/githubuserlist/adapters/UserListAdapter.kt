@@ -6,15 +6,20 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.maxciv.githubuserlist.databinding.ListItemUserBinding
 import com.maxciv.githubuserlist.model.UserShortInfo
+import com.maxciv.githubuserlist.ui.OnNavigateToUserDetailsListener
 
 /**
  * @author maxim.oleynik
  * @since 13.03.2020
  */
-class UserListAdapter : PagedListAdapter<UserShortInfo, UserListAdapter.UserShortInfoViewHolder>(UserShortInfoDiffCallback()) {
+class UserListAdapter(
+        private val onNavigateToUserDetailsListener: OnNavigateToUserDetailsListener
+) : PagedListAdapter<UserShortInfo, UserListAdapter.UserShortInfoViewHolder>(UserShortInfoDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserShortInfoViewHolder {
         return UserShortInfoViewHolder.from(parent)
@@ -22,7 +27,7 @@ class UserListAdapter : PagedListAdapter<UserShortInfo, UserListAdapter.UserShor
 
     override fun onBindViewHolder(holder: UserShortInfoViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.bind(it)
+            holder.bind(it, onNavigateToUserDetailsListener)
         }
     }
 
@@ -31,13 +36,18 @@ class UserListAdapter : PagedListAdapter<UserShortInfo, UserListAdapter.UserShor
             private val binding: ListItemUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(userShortInfo: UserShortInfo) {
+        fun bind(userShortInfo: UserShortInfo, onNavigateToUserDetailsListener: OnNavigateToUserDetailsListener) {
             binding.userShortInfo = userShortInfo
 
             Glide.with(binding.avatarImageView)
                     .load(userShortInfo.avatarUrl)
+                    .transform(CenterCrop(), RoundedCorners(12))
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.avatarImageView)
+
+            binding.rootLayout.setOnClickListener {
+                onNavigateToUserDetailsListener.onNavigateToUserDetails(userShortInfo)
+            }
 
             binding.executePendingBindings()
         }

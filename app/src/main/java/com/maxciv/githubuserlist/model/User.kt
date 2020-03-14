@@ -5,10 +5,10 @@ package com.maxciv.githubuserlist.model
  * @since 14.03.2020
  */
 data class User(
-        var id: Long = 0L,
-        var login: String = "",
-        var avatarUrl: String = "",
-        var name: String = "",
-        var location: String = "",
-        var link: String = ""
+        val id: Long,
+        val login: String,
+        val avatarUrl: String,
+        val name: String,
+        val location: String,
+        val link: String
 )

@@ -2,16 +2,19 @@ package com.maxciv.githubuserlist.adapters
 
 import androidx.paging.DataSource
 import com.maxciv.githubuserlist.model.UserShortInfo
-import com.maxciv.githubuserlist.network.ApiFactory
-import com.maxciv.githubuserlist.repository.GitHubUserRepository
+import com.maxciv.githubuserlist.repository.UserRepository
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * @author maxim.oleynik
  * @since 14.03.2020
  */
-class UserListDataSourceFactory : DataSource.Factory<Int, UserShortInfo>() {
+class UserListDataSourceFactory(
+        private val userRepository: UserRepository,
+        private val compositeDisposable: CompositeDisposable
+) : DataSource.Factory<Long, UserShortInfo>() {
 
-    override fun create(): DataSource<Int, UserShortInfo> {
-        return UserListDataSource(GitHubUserRepository(ApiFactory.gitHubUsersApi))
+    override fun create(): DataSource<Long, UserShortInfo> {
+        return UserListItemKeyedDataSource(userRepository, compositeDisposable)
     }
 }

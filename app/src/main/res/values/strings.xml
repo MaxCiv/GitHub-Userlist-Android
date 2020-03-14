@@ -2,4 +2,5 @@
     <string name="app_name" translatable="false">GitHub User List</string>
     <string name="fragment_label_user_list">GitHub User List</string>
     <string name="fragment_label_user_details">User Details</string>
+    <string name="open_in_browser">Open in browser</string>
 </resources>

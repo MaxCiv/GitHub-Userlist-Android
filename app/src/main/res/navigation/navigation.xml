@@ -11,7 +11,7 @@
         android:label="@string/fragment_label_user_list"
         tools:layout="@layout/fragment_user_list">
         <action
-            android:id="@+id/to_detailed_post"
+            android:id="@+id/to_user_details"
             app:destination="@id/user_details_fragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -23,5 +23,8 @@
         android:name="com.maxciv.githubuserlist.ui.UserDetailsFragment"
         android:label="@string/fragment_label_user_details"
         tools:layout="@layout/fragment_user_details">
+        <argument
+            android:name="userShortInfo"
+            app:argType="com.maxciv.githubuserlist.model.UserShortInfo" />
     </fragment>
 </navigation>

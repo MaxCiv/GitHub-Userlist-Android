@@ -9,19 +9,23 @@ import com.squareup.moshi.Json
  */
 data class GitHubUserShortInfo(
 
-        var id: Long = 0L,
+        val id: Long,
 
-        var login: String = "",
+        val login: String,
 
         @Json(name = "avatar_url")
-        var avatarUrl: String = ""
+        val avatarUrl: String,
+
+        @Json(name = "html_url")
+        val link: String
 )
 
 fun GitHubUserShortInfo.asDomainModel(): UserShortInfo {
     return UserShortInfo(
             id = id,
             login = login,
-            avatarUrl = avatarUrl
+            avatarUrl = avatarUrl,
+            link = link
     )
 }
 

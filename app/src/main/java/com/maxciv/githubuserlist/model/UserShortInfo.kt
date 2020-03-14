@@ -1,11 +1,16 @@
 package com.maxciv.githubuserlist.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 /**
  * @author maxim.oleynik
  * @since 14.03.2020
  */
+@Parcelize
 data class UserShortInfo(
-        var id: Long = 0L,
-        var login: String = "",
-        var avatarUrl: String = ""
-)
+        val id: Long,
+        val login: String,
+        val avatarUrl: String,
+        val link: String
+) : Parcelable

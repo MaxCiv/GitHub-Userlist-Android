@@ -23,13 +23,13 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/avatar_image_view"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_margin="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars[1]" />
+            tools:srcCompat="@tools:sample/avatars[3]" />
 
         <TextView
             android:id="@+id/login_text_view"
@@ -44,7 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/avatar_image_view"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="user_login" />
+            tools:text="@tools:sample/first_names" />
 
         <View
             android:layout_width="match_parent"

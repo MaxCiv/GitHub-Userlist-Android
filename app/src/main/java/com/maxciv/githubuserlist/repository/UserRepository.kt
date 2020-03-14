@@ -2,7 +2,7 @@ package com.maxciv.githubuserlist.repository
 
 import com.maxciv.githubuserlist.model.User
 import com.maxciv.githubuserlist.model.UserShortInfo
-import io.reactivex.Observable
+import io.reactivex.Single
 
 /**
  * @author maxim.oleynik
@@ -10,7 +10,7 @@ import io.reactivex.Observable
  */
 interface UserRepository {
 
-    fun getUsersInfo(since: Int): Observable<List<UserShortInfo>>
+    fun getUsersInfo(since: Long): Single<List<UserShortInfo>>
 
-    fun getUser(login: String): Observable<User>
+    fun getUser(login: String): Single<User>
 }

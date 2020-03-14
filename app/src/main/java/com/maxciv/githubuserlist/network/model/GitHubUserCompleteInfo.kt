@@ -9,19 +9,19 @@ import com.squareup.moshi.Json
  */
 data class GitHubUserCompleteInfo(
 
-        var id: Long = 0L,
+        val id: Long,
 
-        var login: String = "",
+        val login: String,
 
         @Json(name = "avatar_url")
-        var avatarUrl: String = "",
+        val avatarUrl: String,
 
-        var name: String = "",
+        val name: String?,
 
-        var location: String = "",
+        val location: String?,
 
         @Json(name = "html_url")
-        var link: String = ""
+        val link: String
 )
 
 fun GitHubUserCompleteInfo.asDomainModel(): User {
@@ -29,8 +29,8 @@ fun GitHubUserCompleteInfo.asDomainModel(): User {
             id = id,
             login = login,
             avatarUrl = avatarUrl,
-            name = name,
-            location = location,
+            name = name ?: "",
+            location = location ?: "",
             link = link
     )
 }
