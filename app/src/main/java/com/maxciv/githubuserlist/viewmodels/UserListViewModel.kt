@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.maxciv.githubuserlist.adapters.UserListDataSourceFactory
+import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.network.ApiFactory
 import com.maxciv.githubuserlist.network.GITHUB_USER_INITIAL_KEY
@@ -20,8 +21,29 @@ import io.reactivex.disposables.CompositeDisposable
 class UserListViewModel : ViewModel() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
+    private val dataSourceFactory: UserListDataSourceFactory
     val pagedList: LiveData<PagedList<UserShortInfo>>
+
+    //region LoadingStatus
+    private val _loadingStatus = MutableLiveData<LoadingStatus>()
+    val loadingStatus: LiveData<LoadingStatus> = _loadingStatus
+
+    private fun isUserLoading(): Boolean {
+        return loadingStatus.value == LoadingStatus.LOADING
+    }
+
+    private fun userStartLoading() {
+        _loadingStatus.value = LoadingStatus.LOADING
+    }
+
+    private fun userLoaded() {
+        _loadingStatus.value = LoadingStatus.LOADED
+    }
+
+    private fun userLoadFailed() {
+        _loadingStatus.value = LoadingStatus.ERROR
+    }
+    //endregion
 
     init {
         val config = PagedList.Config.Builder()
@@ -30,9 +52,16 @@ class UserListViewModel : ViewModel() {
                 .setPageSize(GITHUB_USER_PAGE_SIZE)
                 .build()
 
-        pagedList = LivePagedListBuilder(UserListDataSourceFactory(GitHubUserRepository(ApiFactory.gitHubUsersApi), compositeDisposable), config)
+        dataSourceFactory = UserListDataSourceFactory(GitHubUserRepository(ApiFactory.gitHubUsersApi), compositeDisposable, _loadingStatus)
+        pagedList = LivePagedListBuilder(dataSourceFactory, config)
                 .setInitialLoadKey(GITHUB_USER_INITIAL_KEY)
                 .build()
+    }
+
+    fun retryLoadPagedList() {
+        if (isUserLoading()) return
+
+        dataSourceFactory.dataSource.retryLastLoad()
     }
 
     //region navigateToUserDetailsEvent

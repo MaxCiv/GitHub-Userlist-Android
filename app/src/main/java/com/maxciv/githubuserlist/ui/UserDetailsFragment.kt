@@ -33,7 +33,7 @@ class UserDetailsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (viewModel.userShortInfo == null) {
             viewModel.userShortInfo = args.userShortInfo
-            viewModel.load()
+            viewModel.loadUser()
         }
     }
 
@@ -41,13 +41,13 @@ class UserDetailsFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_details, container, false)
         binding.lifecycleOwner = this
 
+        binding.retryButton.setOnClickListener {
+            viewModel.loadUser()
+        }
+
         viewModel.userShortInfo?.let {
             loadAvatar(it.avatarUrl)
             setupUserLink(it.link)
-        }
-
-        binding.retryButton.setOnClickListener {
-            viewModel.load()
         }
 
         viewModel.user.observe(viewLifecycleOwner, Observer {

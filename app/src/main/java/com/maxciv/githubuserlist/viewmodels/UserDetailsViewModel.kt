@@ -56,7 +56,7 @@ class UserDetailsViewModel : ViewModel() {
     //endregion
 
     @SuppressLint("CheckResult")
-    fun load() {
+    fun loadUser() {
         if (isUserLoading()) return
 
         userStartLoading()

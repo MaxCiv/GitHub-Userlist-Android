@@ -1,11 +1,15 @@
 package com.maxciv.githubuserlist.adapters
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.ItemKeyedDataSource
+import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.network.GITHUB_USER_INITIAL_KEY
 import com.maxciv.githubuserlist.repository.UserRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 /**
@@ -14,37 +18,59 @@ import timber.log.Timber
  */
 class UserListItemKeyedDataSource(
         private val userRepository: UserRepository,
-        private val compositeDisposable: CompositeDisposable
+        private val compositeDisposable: CompositeDisposable,
+        private val loadingStatus: MutableLiveData<LoadingStatus>
 ) : ItemKeyedDataSource<Long, UserShortInfo>() {
+
+    private var initialParams: LoadInitialParams<Long>? = null
+    private var initialCallback: LoadInitialCallback<UserShortInfo>? = null
+    private var params: LoadParams<Long>? = null
+    private var callback: LoadCallback<UserShortInfo>? = null
 
     @SuppressLint("CheckResult")
     override fun loadInitial(params: LoadInitialParams<Long>, callback: LoadInitialCallback<UserShortInfo>) {
+        this.initialParams = params
+        this.initialCallback = callback
+
+        loadingStatus.postValue(LoadingStatus.LOADING)
         userRepository.getUsersInfo(params.requestedInitialKey ?: GITHUB_USER_INITIAL_KEY)
                 .doOnSubscribe { disposable ->
                     compositeDisposable.add(disposable)
                 }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { usersInfoList: List<UserShortInfo> ->
                             callback.onResult(usersInfoList)
+                            loadingStatus.postValue(LoadingStatus.LOADED)
                         },
                         {
                             Timber.e("ERROR loadInitial: ${it.message}")
+                            loadingStatus.postValue(LoadingStatus.ERROR)
                         }
                 )
     }
 
     @SuppressLint("CheckResult")
     override fun loadAfter(params: LoadParams<Long>, callback: LoadCallback<UserShortInfo>) {
+        this.params = params
+        this.callback = callback
+
+        loadingStatus.postValue(LoadingStatus.LOADING)
         userRepository.getUsersInfo(params.key)
                 .doOnSubscribe { disposable ->
                     compositeDisposable.add(disposable)
                 }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { usersInfoList: List<UserShortInfo> ->
                             callback.onResult(usersInfoList)
+                            loadingStatus.postValue(LoadingStatus.LOADED)
                         },
                         {
                             Timber.e("ERROR loadAfter: ${it.message}")
+                            loadingStatus.postValue(LoadingStatus.ERROR)
                         }
                 )
     }
@@ -54,5 +80,24 @@ class UserListItemKeyedDataSource(
 
     override fun getKey(item: UserShortInfo): Long {
         return item.id
+    }
+
+    fun retryLastLoad() {
+        when {
+            isLoadInitialReady() -> {
+                loadInitial(initialParams ?: return, initialCallback ?: return)
+            }
+            isLoadAfterReady() -> {
+                loadAfter(params ?: return, callback ?: return)
+            }
+        }
+    }
+
+    private fun isLoadInitialReady(): Boolean {
+        return initialParams != null && initialCallback != null && !isLoadAfterReady()
+    }
+
+    private fun isLoadAfterReady(): Boolean {
+        return params != null && callback != null
     }
 }

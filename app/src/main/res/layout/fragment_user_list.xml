@@ -13,14 +13,44 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="2dp"
-            android:paddingBottom="78dp"
+            android:paddingBottom="108dp"
             tools:listitem="@layout/list_item_user" />
 
-        <FrameLayout
+        <ProgressBar
+            android:id="@+id/initial_loading_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:id="@+id/retry_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@android:color/background_light">
+            android:background="@android:color/background_light"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/retry_loading_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_marginTop="-7dp"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/missing_network_connection"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/retry_button"
@@ -40,6 +70,6 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp" />
             </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
 </layout>

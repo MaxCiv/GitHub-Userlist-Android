@@ -1,6 +1,8 @@
 package com.maxciv.githubuserlist.adapters
 
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
+import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.repository.UserRepository
 import io.reactivex.disposables.CompositeDisposable
@@ -11,10 +13,15 @@ import io.reactivex.disposables.CompositeDisposable
  */
 class UserListDataSourceFactory(
         private val userRepository: UserRepository,
-        private val compositeDisposable: CompositeDisposable
+        private val compositeDisposable: CompositeDisposable,
+        private val loadingStatus: MutableLiveData<LoadingStatus>
 ) : DataSource.Factory<Long, UserShortInfo>() {
 
+    lateinit var dataSource: UserListItemKeyedDataSource
+        private set
+
     override fun create(): DataSource<Long, UserShortInfo> {
-        return UserListItemKeyedDataSource(userRepository, compositeDisposable)
+        dataSource = UserListItemKeyedDataSource(userRepository, compositeDisposable, loadingStatus)
+        return dataSource
     }
 }

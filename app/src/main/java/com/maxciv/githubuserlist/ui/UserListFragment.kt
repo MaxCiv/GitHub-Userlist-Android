@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxciv.githubuserlist.R
 import com.maxciv.githubuserlist.adapters.UserListAdapter
 import com.maxciv.githubuserlist.databinding.FragmentUserListBinding
+import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.viewmodels.UserListViewModel
 
@@ -36,14 +37,39 @@ class UserListFragment : Fragment(), OnNavigateToUserDetailsListener {
             this.adapter = adapter
         }
 
+        binding.retryButton.setOnClickListener {
+            viewModel.retryLoadPagedList()
+        }
+
         viewModel.pagedList.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            it?.let {
+                adapter.submitList(it)
+                binding.initialLoadingBar.visibility = View.GONE
+            }
         })
 
         viewModel.navigateToUserDetailsEvent.observe(viewLifecycleOwner, Observer {
             it?.let { userShortInfo ->
                 this.findNavController().navigate(UserListFragmentDirections.toUserDetails(userShortInfo))
                 viewModel.navigateToUserDetailsEnded()
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            it?.let { status ->
+                when (status) {
+                    LoadingStatus.LOADING -> {
+                        binding.retryLoadingBar.visibility = View.VISIBLE
+                    }
+                    LoadingStatus.LOADED -> {
+                        binding.retryLoadingBar.visibility = View.INVISIBLE
+                        binding.retryLayout.visibility = View.GONE
+                    }
+                    LoadingStatus.ERROR -> {
+                        binding.retryLoadingBar.visibility = View.INVISIBLE
+                        binding.retryLayout.visibility = View.VISIBLE
+                    }
+                }
             }
         })
 
