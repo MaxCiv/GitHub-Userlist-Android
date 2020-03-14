@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.maxciv.githubuserlist.R
 import com.maxciv.githubuserlist.databinding.FragmentUserDetailsBinding
+import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.viewmodels.UserDetailsViewModel
 
 /**
@@ -40,24 +41,62 @@ class UserDetailsFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_details, container, false)
         binding.lifecycleOwner = this
 
-        Glide.with(binding.avatarImageView)
-                .load(viewModel.userShortInfo?.avatarUrl)
-                .transform(CenterCrop())
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(binding.avatarImageView)
+        viewModel.userShortInfo?.let {
+            loadAvatar(it.avatarUrl)
+            setupUserLink(it.link)
+        }
 
-        binding.openBrowserButton.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(viewModel.userShortInfo?.link)
-            })
+        binding.retryButton.setOnClickListener {
+            viewModel.load()
         }
 
         viewModel.user.observe(viewLifecycleOwner, Observer {
             it?.let { user ->
                 binding.user = user
+
+                if (user.avatarUrl != viewModel.userShortInfo?.avatarUrl || binding.avatarImageView.drawable == null) {
+                    loadAvatar(user.avatarUrl)
+                }
+                if (user.link != viewModel.userShortInfo?.link) {
+                    setupUserLink(user.link)
+                }
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            it?.let { status ->
+                when (status) {
+                    LoadingStatus.LOADING -> {
+                        binding.loadingBar.show()
+                    }
+                    LoadingStatus.LOADED -> {
+                        binding.loadingBar.hide()
+                        binding.retryButton.visibility = View.GONE
+                    }
+                    LoadingStatus.ERROR -> {
+                        binding.loadingBar.hide()
+                        binding.retryButton.visibility = View.VISIBLE
+                    }
+                }
             }
         })
 
         return binding.root
+    }
+
+    private fun loadAvatar(avatarUrl: String) {
+        Glide.with(binding.avatarImageView)
+                .load(avatarUrl)
+                .transform(CenterCrop())
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.avatarImageView)
+    }
+
+    private fun setupUserLink(link: String) {
+        binding.openBrowserButton.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(link)
+            })
+        }
     }
 }

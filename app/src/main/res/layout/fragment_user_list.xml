@@ -15,5 +15,31 @@
             android:paddingTop="2dp"
             android:paddingBottom="78dp"
             tools:listitem="@layout/list_item_user" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/background_light">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/retry_button"
+                style="@style/Widget.GitHubUserList.RoundButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_large">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin_medium"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:text="@string/retry"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp" />
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
     </FrameLayout>
 </layout>

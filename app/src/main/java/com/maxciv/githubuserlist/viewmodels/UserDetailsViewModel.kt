@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.User
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.network.ApiFactory
@@ -33,8 +34,32 @@ class UserDetailsViewModel : ViewModel() {
         _user.value = user
     }
 
+    //region LoadingStatus
+    private val _loadingStatus = MutableLiveData<LoadingStatus>()
+    val loadingStatus: LiveData<LoadingStatus> = _loadingStatus
+
+    private fun isUserLoading(): Boolean {
+        return loadingStatus.value == LoadingStatus.LOADING
+    }
+
+    private fun userStartLoading() {
+        _loadingStatus.value = LoadingStatus.LOADING
+    }
+
+    private fun userLoaded() {
+        _loadingStatus.value = LoadingStatus.LOADED
+    }
+
+    private fun userLoadFailed() {
+        _loadingStatus.value = LoadingStatus.ERROR
+    }
+    //endregion
+
     @SuppressLint("CheckResult")
     fun load() {
+        if (isUserLoading()) return
+
+        userStartLoading()
         userRepository.getUser(userShortInfo?.login ?: "")
                 .doOnSubscribe { disposable ->
                     compositeDisposable.add(disposable)
@@ -44,9 +69,11 @@ class UserDetailsViewModel : ViewModel() {
                 .subscribe(
                         { user: User ->
                             setNewUser(user)
+                            userLoaded()
                         },
                         {
                             Timber.e("ERROR getUser: ${it.message}")
+                            userLoadFailed()
                         }
                 )
     }

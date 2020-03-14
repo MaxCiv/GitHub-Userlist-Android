@@ -71,6 +71,33 @@
             </LinearLayout>
         </ScrollView>
 
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/loading_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="82dp"
+            android:layout_height="82dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/scroll_view"
+            app:layout_constraintEnd_toEndOf="@+id/scroll_view"
+            app:layout_constraintStart_toStartOf="@+id/scroll_view"
+            app:layout_constraintTop_toTopOf="@+id/scroll_view"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/scroll_view"
+            app:layout_constraintEnd_toEndOf="@+id/scroll_view"
+            app:layout_constraintStart_toStartOf="@+id/scroll_view"
+            app:layout_constraintTop_toTopOf="@+id/scroll_view"
+            app:srcCompat="@drawable/ic_refresh_black_48dp"
+            tools:visibility="visible" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/open_browser_button"
             style="@style/Widget.GitHubUserList.RoundButton"
