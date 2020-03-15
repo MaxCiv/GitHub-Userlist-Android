@@ -90,11 +90,13 @@ class UserDetailsFragment : DaggerFragment() {
         return binding.root
     }
 
-    private fun isNeedToUpdateLink(user: User) =
-            user.link != viewModel.userShortInfo?.link
+    private fun isNeedToUpdateLink(user: User): Boolean {
+        return user.link != viewModel.userShortInfo?.link
+    }
 
-    private fun isNeedToUpdateAvatar(user: User) =
-            user.avatarUrl != viewModel.userShortInfo?.avatarUrl || binding.avatarImageView.drawable == null
+    private fun isNeedToUpdateAvatar(user: User): Boolean {
+        return user.avatarUrl != viewModel.userShortInfo?.avatarUrl || binding.avatarImageView.drawable == null
+    }
 
     private fun loadAvatar(avatarUrl: String) {
         Glide.with(binding.avatarImageView)
