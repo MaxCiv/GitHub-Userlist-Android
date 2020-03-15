@@ -8,10 +8,10 @@ import androidx.paging.PagedList
 import com.maxciv.githubuserlist.adapters.UserListDataSourceFactory
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
+import com.maxciv.githubuserlist.model.isLoading
 import com.maxciv.githubuserlist.network.GITHUB_USER_INITIAL_KEY
 import com.maxciv.githubuserlist.network.GITHUB_USER_PAGE_SIZE
 import com.maxciv.githubuserlist.repository.UserRepository
-import com.maxciv.githubuserlist.util.isLoading
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
