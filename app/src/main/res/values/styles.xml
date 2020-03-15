@@ -20,4 +20,22 @@
         <item name="strokeColor">@color/colorPrimary</item>
         <item name="strokeWidth">2dp</item>
     </style>
+
+    <style name="Widget.GitHubUserList.RoundButton.Text" parent="">
+        <item name="android:layout_margin">@dimen/margin_medium</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="Widget.GitHubUserList.Clickable" parent="">
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Widget.GitHubUserList.Clickable.Borderless" parent="Widget.GitHubUserList.Clickable">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
 </resources>

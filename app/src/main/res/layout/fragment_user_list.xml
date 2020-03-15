@@ -12,7 +12,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="2dp"
             android:paddingBottom="108dp"
             tools:listitem="@layout/list_item_user" />
 
@@ -62,15 +61,11 @@
                 android:layout_margin="@dimen/margin_large">
 
                 <TextView
+                    style="@style/Widget.GitHubUserList.RoundButton.Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/margin_medium"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:text="@string/retry"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
+                    android:text="@string/retry" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </FrameLayout>

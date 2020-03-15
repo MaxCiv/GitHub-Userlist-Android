@@ -85,11 +85,9 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/retry_button"
+            style="@style/Widget.GitHubUserList.Clickable.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/scroll_view"
             app:layout_constraintEnd_toEndOf="@+id/scroll_view"
@@ -109,15 +107,11 @@
             app:layout_constraintStart_toEndOf="@+id/avatar_image_view">
 
             <TextView
+                style="@style/Widget.GitHubUserList.RoundButton.Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/margin_medium"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="@string/open_in_browser"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp" />
+                android:text="@string/open_in_browser" />
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
