@@ -44,7 +44,6 @@ class UserListFragment : Fragment(), OnNavigateToUserDetailsListener {
         viewModel.pagedList.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
-                binding.initialLoadingBar.visibility = View.GONE
             }
         })
 
@@ -62,6 +61,7 @@ class UserListFragment : Fragment(), OnNavigateToUserDetailsListener {
                         binding.retryLoadingBar.visibility = View.VISIBLE
                     }
                     LoadingStatus.LOADED -> {
+                        binding.initialLoadingBar.visibility = View.GONE
                         binding.retryLoadingBar.visibility = View.INVISIBLE
                         binding.retryLayout.visibility = View.GONE
                     }

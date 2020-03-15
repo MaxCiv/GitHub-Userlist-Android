@@ -24,8 +24,8 @@ class UserListItemKeyedDataSource(
 
     private var initialParams: LoadInitialParams<Long>? = null
     private var initialCallback: LoadInitialCallback<UserShortInfo>? = null
-    private var params: LoadParams<Long>? = null
-    private var callback: LoadCallback<UserShortInfo>? = null
+    private var latestParams: LoadParams<Long>? = null
+    private var latestCallback: LoadCallback<UserShortInfo>? = null
 
     @SuppressLint("CheckResult")
     override fun loadInitial(params: LoadInitialParams<Long>, callback: LoadInitialCallback<UserShortInfo>) {
@@ -53,8 +53,8 @@ class UserListItemKeyedDataSource(
 
     @SuppressLint("CheckResult")
     override fun loadAfter(params: LoadParams<Long>, callback: LoadCallback<UserShortInfo>) {
-        this.params = params
-        this.callback = callback
+        this.latestParams = params
+        this.latestCallback = callback
 
         loadingStatus.postValue(LoadingStatus.LOADING)
         userRepository.getUsersInfo(params.key)
@@ -88,7 +88,7 @@ class UserListItemKeyedDataSource(
                 loadInitial(initialParams ?: return, initialCallback ?: return)
             }
             isLoadAfterReady() -> {
-                loadAfter(params ?: return, callback ?: return)
+                loadAfter(latestParams ?: return, latestCallback ?: return)
             }
         }
     }
@@ -98,6 +98,6 @@ class UserListItemKeyedDataSource(
     }
 
     private fun isLoadAfterReady(): Boolean {
-        return params != null && callback != null
+        return latestParams != null && latestCallback != null
     }
 }
