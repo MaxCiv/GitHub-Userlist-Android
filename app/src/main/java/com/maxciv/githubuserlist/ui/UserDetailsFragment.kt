@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -18,16 +17,22 @@ import com.maxciv.githubuserlist.R
 import com.maxciv.githubuserlist.databinding.FragmentUserDetailsBinding
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.viewmodels.UserDetailsViewModel
+import com.maxciv.githubuserlist.viewmodels.UserDetailsViewModelFactory
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 /**
  * @author maxim.oleynik
  * @since 13.03.2020
  */
-class UserDetailsFragment : Fragment() {
+class UserDetailsFragment : DaggerFragment() {
 
     private lateinit var binding: FragmentUserDetailsBinding
     private val args: UserDetailsFragmentArgs by navArgs()
-    private val viewModel: UserDetailsViewModel by viewModels()
+
+    @Inject
+    lateinit var userDetailsViewModelFactory: UserDetailsViewModelFactory
+    private val viewModel: UserDetailsViewModel by viewModels { userDetailsViewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

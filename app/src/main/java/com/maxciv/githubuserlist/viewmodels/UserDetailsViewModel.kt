@@ -7,23 +7,21 @@ import androidx.lifecycle.ViewModel
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.User
 import com.maxciv.githubuserlist.model.UserShortInfo
-import com.maxciv.githubuserlist.network.ApiFactory
-import com.maxciv.githubuserlist.repository.GitHubUserRepository
 import com.maxciv.githubuserlist.repository.UserRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * @author maxim.oleynik
  * @since 13.03.2020
  */
-class UserDetailsViewModel : ViewModel() {
-
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
-    private val userRepository: UserRepository = GitHubUserRepository(ApiFactory.gitHubUsersApi)
+class UserDetailsViewModel @Inject constructor(
+        private val userRepository: UserRepository,
+        private val compositeDisposable: CompositeDisposable
+) : ViewModel() {
 
     var userShortInfo: UserShortInfo? = null
 

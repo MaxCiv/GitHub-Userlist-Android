@@ -12,6 +12,7 @@ import retrofit2.http.Query
  * @author maxim.oleynik
  * @since 13.03.2020
  */
+const val GITHUB_BASE_URL = "https://api.github.com/"
 const val GITHUB_USER_INITIAL_KEY = 0L
 const val GITHUB_USER_PAGE_SIZE = 30
 

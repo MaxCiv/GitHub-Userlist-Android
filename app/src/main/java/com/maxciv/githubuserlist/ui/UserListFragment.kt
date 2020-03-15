@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -16,15 +15,21 @@ import com.maxciv.githubuserlist.databinding.FragmentUserListBinding
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.viewmodels.UserListViewModel
+import com.maxciv.githubuserlist.viewmodels.UserListViewModelFactory
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 /**
  * @author maxim.oleynik
  * @since 13.03.2020
  */
-class UserListFragment : Fragment(), OnNavigateToUserDetailsListener {
+class UserListFragment : DaggerFragment(), OnNavigateToUserDetailsListener {
 
     private lateinit var binding: FragmentUserListBinding
-    private val viewModel: UserListViewModel by viewModels()
+
+    @Inject
+    lateinit var userListViewModelFactory: UserListViewModelFactory
+    private val viewModel: UserListViewModel by viewModels { userListViewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_list, container, false)
@@ -61,19 +66,28 @@ class UserListFragment : Fragment(), OnNavigateToUserDetailsListener {
                         binding.retryLoadingBar.visibility = View.VISIBLE
                     }
                     LoadingStatus.LOADED -> {
-                        binding.initialLoadingBar.visibility = View.GONE
-                        binding.retryLoadingBar.visibility = View.INVISIBLE
-                        binding.retryLayout.visibility = View.GONE
+                        hideMissingNetworkLayout()
                     }
                     LoadingStatus.ERROR -> {
-                        binding.retryLoadingBar.visibility = View.INVISIBLE
-                        binding.retryLayout.visibility = View.VISIBLE
+                        showMissingNetworkLayout()
                     }
                 }
             }
         })
 
         return binding.root
+    }
+
+    private fun showMissingNetworkLayout() {
+        binding.initialLoadingBar.visibility = View.GONE
+        binding.retryLoadingBar.visibility = View.INVISIBLE
+        binding.retryLayout.visibility = View.VISIBLE
+    }
+
+    private fun hideMissingNetworkLayout() {
+        binding.initialLoadingBar.visibility = View.GONE
+        binding.retryLoadingBar.visibility = View.INVISIBLE
+        binding.retryLayout.visibility = View.GONE
     }
 
     override fun onNavigateToUserDetails(userShortInfo: UserShortInfo) {

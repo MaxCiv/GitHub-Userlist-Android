@@ -8,19 +8,21 @@ import androidx.paging.PagedList
 import com.maxciv.githubuserlist.adapters.UserListDataSourceFactory
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
-import com.maxciv.githubuserlist.network.ApiFactory
 import com.maxciv.githubuserlist.network.GITHUB_USER_INITIAL_KEY
 import com.maxciv.githubuserlist.network.GITHUB_USER_PAGE_SIZE
-import com.maxciv.githubuserlist.repository.GitHubUserRepository
+import com.maxciv.githubuserlist.repository.UserRepository
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 /**
  * @author maxim.oleynik
  * @since 13.03.2020
  */
-class UserListViewModel : ViewModel() {
+class UserListViewModel @Inject constructor(
+        userRepository: UserRepository,
+        private val compositeDisposable: CompositeDisposable
+) : ViewModel() {
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val dataSourceFactory: UserListDataSourceFactory
     val pagedList: LiveData<PagedList<UserShortInfo>>
 
@@ -52,7 +54,7 @@ class UserListViewModel : ViewModel() {
                 .setPageSize(GITHUB_USER_PAGE_SIZE)
                 .build()
 
-        dataSourceFactory = UserListDataSourceFactory(GitHubUserRepository(ApiFactory.gitHubUsersApi), compositeDisposable, _loadingStatus)
+        dataSourceFactory = UserListDataSourceFactory(userRepository, compositeDisposable, _loadingStatus)
         pagedList = LivePagedListBuilder(dataSourceFactory, config)
                 .setInitialLoadKey(GITHUB_USER_INITIAL_KEY)
                 .build()
