@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.maxciv.githubuserlist.R
 import com.maxciv.githubuserlist.databinding.FragmentUserDetailsBinding
 import com.maxciv.githubuserlist.model.LoadingStatus
+import com.maxciv.githubuserlist.model.User
 import com.maxciv.githubuserlist.viewmodels.UserDetailsViewModel
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -59,10 +60,10 @@ class UserDetailsFragment : DaggerFragment() {
             it?.let { user ->
                 binding.user = user
 
-                if (user.avatarUrl != viewModel.userShortInfo?.avatarUrl || binding.avatarImageView.drawable == null) {
+                if (isNeedToUpdateAvatar(user)) {
                     loadAvatar(user.avatarUrl)
                 }
-                if (user.link != viewModel.userShortInfo?.link) {
+                if (isNeedToUpdateLink(user)) {
                     setupUserLink(user.link)
                 }
             }
@@ -88,6 +89,12 @@ class UserDetailsFragment : DaggerFragment() {
 
         return binding.root
     }
+
+    private fun isNeedToUpdateLink(user: User) =
+            user.link != viewModel.userShortInfo?.link
+
+    private fun isNeedToUpdateAvatar(user: User) =
+            user.avatarUrl != viewModel.userShortInfo?.avatarUrl || binding.avatarImageView.drawable == null
 
     private fun loadAvatar(avatarUrl: String) {
         Glide.with(binding.avatarImageView)

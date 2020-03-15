@@ -15,7 +15,7 @@ class GitHubUserRepository(private val api: GitHubUsersApi) : UserRepository {
     override fun getUsersInfo(since: Long): Single<List<UserShortInfo>> {
         return api.getAllUsers(since).flatMap { response ->
             if (response.isSuccessful && response.body() != null) {
-                Single.just(response.body()?.asDomainModel() ?: listOf())
+                Single.just(response.body()?.asDomainModel())
             } else {
                 Single.error(Throwable(response.errorBody()?.string()))
             }

@@ -25,6 +25,7 @@ class UserListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val dataSourceFactory: UserListDataSourceFactory
+
     val pagedList: LiveData<PagedList<UserShortInfo>>
 
     private val _pagedListLoadingStatus = MutableLiveData<LoadingStatus>()

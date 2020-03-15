@@ -65,7 +65,7 @@ class UserListAdapter(
 private class UserShortInfoDiffCallback : DiffUtil.ItemCallback<UserShortInfo>() {
 
     override fun areItemsTheSame(oldItem: UserShortInfo, newItem: UserShortInfo): Boolean {
-        return oldItem.javaClass == newItem.javaClass && oldItem.id == newItem.id
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: UserShortInfo, newItem: UserShortInfo): Boolean {

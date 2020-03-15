@@ -47,6 +47,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginEnd="@dimen/margin_large"
                 android:gravity="center"
                 android:text="@string/missing_network_connection"
                 android:textColor="@color/colorPrimary"
