@@ -7,6 +7,10 @@ import androidx.lifecycle.ViewModel
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.User
 import com.maxciv.githubuserlist.model.UserShortInfo
+import com.maxciv.githubuserlist.model.isLoading
+import com.maxciv.githubuserlist.model.setError
+import com.maxciv.githubuserlist.model.setLoaded
+import com.maxciv.githubuserlist.model.setLoading
 import com.maxciv.githubuserlist.repository.UserRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -25,6 +29,9 @@ class UserDetailsViewModel @Inject constructor(
 
     var userShortInfo: UserShortInfo? = null
 
+    private val _userLoadingStatus = MutableLiveData<LoadingStatus>()
+    val userLoadingStatus: LiveData<LoadingStatus> = _userLoadingStatus
+
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
 
@@ -32,32 +39,11 @@ class UserDetailsViewModel @Inject constructor(
         _user.value = user
     }
 
-    //region LoadingStatus
-    private val _loadingStatus = MutableLiveData<LoadingStatus>()
-    val loadingStatus: LiveData<LoadingStatus> = _loadingStatus
-
-    private fun isUserLoading(): Boolean {
-        return loadingStatus.value == LoadingStatus.LOADING
-    }
-
-    private fun userStartLoading() {
-        _loadingStatus.value = LoadingStatus.LOADING
-    }
-
-    private fun userLoaded() {
-        _loadingStatus.value = LoadingStatus.LOADED
-    }
-
-    private fun userLoadFailed() {
-        _loadingStatus.value = LoadingStatus.ERROR
-    }
-    //endregion
-
     @SuppressLint("CheckResult")
     fun loadUser() {
-        if (isUserLoading()) return
+        if (userLoadingStatus.isLoading()) return
 
-        userStartLoading()
+        _userLoadingStatus.setLoading()
         userRepository.getUser(userShortInfo?.login ?: "")
                 .doOnSubscribe { disposable ->
                     compositeDisposable.add(disposable)
@@ -67,11 +53,11 @@ class UserDetailsViewModel @Inject constructor(
                 .subscribe(
                         { user: User ->
                             setNewUser(user)
-                            userLoaded()
+                            _userLoadingStatus.setLoaded()
                         },
                         {
                             Timber.e("ERROR getUser: ${it.message}")
-                            userLoadFailed()
+                            _userLoadingStatus.setError()
                         }
                 )
     }

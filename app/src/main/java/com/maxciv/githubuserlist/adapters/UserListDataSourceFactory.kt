@@ -14,14 +14,14 @@ import io.reactivex.disposables.CompositeDisposable
 class UserListDataSourceFactory(
         private val userRepository: UserRepository,
         private val compositeDisposable: CompositeDisposable,
-        private val loadingStatus: MutableLiveData<LoadingStatus>
+        private val pagedListLoadingStatus: MutableLiveData<LoadingStatus>
 ) : DataSource.Factory<Long, UserShortInfo>() {
 
     lateinit var dataSource: UserListItemKeyedDataSource
         private set
 
     override fun create(): DataSource<Long, UserShortInfo> {
-        dataSource = UserListItemKeyedDataSource(userRepository, compositeDisposable, loadingStatus)
+        dataSource = UserListItemKeyedDataSource(userRepository, compositeDisposable, pagedListLoadingStatus)
         return dataSource
     }
 }

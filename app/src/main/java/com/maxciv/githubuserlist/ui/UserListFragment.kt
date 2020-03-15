@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.maxciv.githubuserlist.R
@@ -15,7 +16,6 @@ import com.maxciv.githubuserlist.databinding.FragmentUserListBinding
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.viewmodels.UserListViewModel
-import com.maxciv.githubuserlist.viewmodels.UserListViewModelFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -28,8 +28,8 @@ class UserListFragment : DaggerFragment(), OnNavigateToUserDetailsListener {
     private lateinit var binding: FragmentUserListBinding
 
     @Inject
-    lateinit var userListViewModelFactory: UserListViewModelFactory
-    private val viewModel: UserListViewModel by viewModels { userListViewModelFactory }
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: UserListViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_user_list, container, false)
@@ -59,7 +59,7 @@ class UserListFragment : DaggerFragment(), OnNavigateToUserDetailsListener {
             }
         })
 
-        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+        viewModel.pagedListLoadingStatus.observe(viewLifecycleOwner, Observer {
             it?.let { status ->
                 when (status) {
                     LoadingStatus.LOADING -> {

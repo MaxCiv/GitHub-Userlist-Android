@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.ItemKeyedDataSource
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.model.UserShortInfo
+import com.maxciv.githubuserlist.model.postLoading
+import com.maxciv.githubuserlist.model.setError
+import com.maxciv.githubuserlist.model.setLoaded
 import com.maxciv.githubuserlist.network.GITHUB_USER_INITIAL_KEY
 import com.maxciv.githubuserlist.repository.UserRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +22,7 @@ import timber.log.Timber
 class UserListItemKeyedDataSource(
         private val userRepository: UserRepository,
         private val compositeDisposable: CompositeDisposable,
-        private val loadingStatus: MutableLiveData<LoadingStatus>
+        private val pagedListLoadingStatus: MutableLiveData<LoadingStatus>
 ) : ItemKeyedDataSource<Long, UserShortInfo>() {
 
     private var initialParams: LoadInitialParams<Long>? = null
@@ -32,7 +35,7 @@ class UserListItemKeyedDataSource(
         this.initialParams = params
         this.initialCallback = callback
 
-        loadingStatus.postValue(LoadingStatus.LOADING)
+        pagedListLoadingStatus.postLoading()
         userRepository.getUsersInfo(params.requestedInitialKey ?: GITHUB_USER_INITIAL_KEY)
                 .doOnSubscribe { disposable ->
                     compositeDisposable.add(disposable)
@@ -42,11 +45,11 @@ class UserListItemKeyedDataSource(
                 .subscribe(
                         { usersInfoList: List<UserShortInfo> ->
                             callback.onResult(usersInfoList)
-                            loadingStatus.postValue(LoadingStatus.LOADED)
+                            pagedListLoadingStatus.setLoaded()
                         },
                         {
                             Timber.e("ERROR loadInitial: ${it.message}")
-                            loadingStatus.postValue(LoadingStatus.ERROR)
+                            pagedListLoadingStatus.setError()
                         }
                 )
     }
@@ -56,7 +59,7 @@ class UserListItemKeyedDataSource(
         this.latestParams = params
         this.latestCallback = callback
 
-        loadingStatus.postValue(LoadingStatus.LOADING)
+        pagedListLoadingStatus.postLoading()
         userRepository.getUsersInfo(params.key)
                 .doOnSubscribe { disposable ->
                     compositeDisposable.add(disposable)
@@ -66,11 +69,11 @@ class UserListItemKeyedDataSource(
                 .subscribe(
                         { usersInfoList: List<UserShortInfo> ->
                             callback.onResult(usersInfoList)
-                            loadingStatus.postValue(LoadingStatus.LOADED)
+                            pagedListLoadingStatus.setLoaded()
                         },
                         {
                             Timber.e("ERROR loadAfter: ${it.message}")
-                            loadingStatus.postValue(LoadingStatus.ERROR)
+                            pagedListLoadingStatus.setError()
                         }
                 )
     }

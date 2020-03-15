@@ -11,6 +11,7 @@ import com.maxciv.githubuserlist.model.UserShortInfo
 import com.maxciv.githubuserlist.network.GITHUB_USER_INITIAL_KEY
 import com.maxciv.githubuserlist.network.GITHUB_USER_PAGE_SIZE
 import com.maxciv.githubuserlist.repository.UserRepository
+import com.maxciv.githubuserlist.util.isLoading
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -26,26 +27,8 @@ class UserListViewModel @Inject constructor(
     private val dataSourceFactory: UserListDataSourceFactory
     val pagedList: LiveData<PagedList<UserShortInfo>>
 
-    //region LoadingStatus
-    private val _loadingStatus = MutableLiveData<LoadingStatus>()
-    val loadingStatus: LiveData<LoadingStatus> = _loadingStatus
-
-    private fun isUserLoading(): Boolean {
-        return loadingStatus.value == LoadingStatus.LOADING
-    }
-
-    private fun userStartLoading() {
-        _loadingStatus.value = LoadingStatus.LOADING
-    }
-
-    private fun userLoaded() {
-        _loadingStatus.value = LoadingStatus.LOADED
-    }
-
-    private fun userLoadFailed() {
-        _loadingStatus.value = LoadingStatus.ERROR
-    }
-    //endregion
+    private val _pagedListLoadingStatus = MutableLiveData<LoadingStatus>()
+    val pagedListLoadingStatus: LiveData<LoadingStatus> = _pagedListLoadingStatus
 
     init {
         val config = PagedList.Config.Builder()
@@ -54,14 +37,14 @@ class UserListViewModel @Inject constructor(
                 .setPageSize(GITHUB_USER_PAGE_SIZE)
                 .build()
 
-        dataSourceFactory = UserListDataSourceFactory(userRepository, compositeDisposable, _loadingStatus)
+        dataSourceFactory = UserListDataSourceFactory(userRepository, compositeDisposable, _pagedListLoadingStatus)
         pagedList = LivePagedListBuilder(dataSourceFactory, config)
                 .setInitialLoadKey(GITHUB_USER_INITIAL_KEY)
                 .build()
     }
 
     fun retryLoadPagedList() {
-        if (isUserLoading()) return
+        if (pagedListLoadingStatus.isLoading()) return
 
         dataSourceFactory.dataSource.retryLastLoad()
     }

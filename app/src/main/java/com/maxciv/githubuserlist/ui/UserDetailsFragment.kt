@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -17,7 +18,6 @@ import com.maxciv.githubuserlist.R
 import com.maxciv.githubuserlist.databinding.FragmentUserDetailsBinding
 import com.maxciv.githubuserlist.model.LoadingStatus
 import com.maxciv.githubuserlist.viewmodels.UserDetailsViewModel
-import com.maxciv.githubuserlist.viewmodels.UserDetailsViewModelFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -31,8 +31,8 @@ class UserDetailsFragment : DaggerFragment() {
     private val args: UserDetailsFragmentArgs by navArgs()
 
     @Inject
-    lateinit var userDetailsViewModelFactory: UserDetailsViewModelFactory
-    private val viewModel: UserDetailsViewModel by viewModels { userDetailsViewModelFactory }
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: UserDetailsViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +68,7 @@ class UserDetailsFragment : DaggerFragment() {
             }
         })
 
-        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+        viewModel.userLoadingStatus.observe(viewLifecycleOwner, Observer {
             it?.let { status ->
                 when (status) {
                     LoadingStatus.LOADING -> {
